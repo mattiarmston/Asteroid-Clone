@@ -57,7 +57,6 @@ class Game():
         WINDOW.blit(scoreText, (WIDTH/2 - scoreText.get_width()/2, HEIGHT/2 - scoreText.get_height()/2))
         pygame.display.update()
         time.sleep(2)
-        print("Wake up!")
     def mainMenu(self):
         while self.run:
             self.main()
@@ -149,6 +148,16 @@ class Asteroid():
     def moveSelf(self):
         self.x += self.speedX
         self.y += self.speedY
+
+class coin():
+    def __init__(x, y, width, height, image):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = heigth
+        self.image = image
+        self.mask = pygame.mask.from_surface(self.image)
+
         
 game = Game()
 game.mainMenu()

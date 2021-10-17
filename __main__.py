@@ -19,7 +19,7 @@ class Game():
     def __init__(self):
         self.run = True
         self.lost = False
-        self.FPS = 60
+        self.FPS = 15
         self.toDraw = []
         self.framesPassed = 0
         self.secondsPassed = 0
@@ -53,31 +53,30 @@ class Game():
         if self.framesPassed == self.FPS:
             self.framesPassed = 0
             self.secondsPassed += 1
-        print(self.secondsPassed)
-        print(self.framesPassed)
         Asteroid.spawnAsteroid()
         if self.coinSpawned == False:
-            coin = Coin(random.randint(0, WIDTH), random.randint(0, HEIGHT),
-                   30, 30, "coin", coinImage)
+            coin = Coin(0, 0, 30, 30, "coin", coinImage)
             self.coinSpawned = True
             self.toDraw.append(coin)
     def increaseDifficulty(self):
-        if self.secondsPassed == 5:
+        self.timeAlive = int(time.strftime("%S", time.localtime())) - self.startTime
+        print(self.timeAlive)
+        if self.timeAlive == 5:
             #Ensures spawn rate is only decreased once not every frame
             if self.framesPassed == 0:
-                self.asteroidSpawnRate -= 10
-                print("Harder 1")
-        elif self.secondsPassed == 10:
-            if self.framesPassed == 0:
-                self.asteroidSpawnRate -= 10
-        elif self.secondsPassed == 15:
+                self.asteroidSpawnRate -= 5
+        elif self.timeAlive == 10:
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
-        elif self.secondsPassed > 15 and self.secondsPassed % 5 == 0:
+        elif self.timeAlive == 15:
+            if self.framesPassed == 0:
+                self.asteroidSpawnRate -= 5
+        elif self.timeAlive > 15 and self.secondsPassed % 5 == 0:
             if self.framesPassed == 0 and self.asteroidSpawnRate > 1:
                 self.asteroidSpawnRate -= 1
     def main(self):
         self.initGame()
+        self.startTime = int(time.strftime("%S", time.localtime()))
         while self.lost == False:
             self.clock.tick(self.FPS)
             self.spawnObjects()
@@ -87,9 +86,11 @@ class Game():
                 item.moveSelf()
             self.player.onCollision()
             self.increaseDifficulty()
+        self.endTime = int(time.strftime("%S", time.localtime()))
+        self.timeAlive = self.endTime - self.startTime
         scoreText = self.mainFont.render("Your score is {}".format(self.score),
                     1, (255, 255, 255))
-        timeText = self.mainFont.render("You survived for {} seconds".format(self.secondsPassed),
+        timeText = self.mainFont.render("You survived for {} seconds".format(self.timeAlive),
                    1, (255, 255, 255))
         WINDOW.blit(scoreText, (WIDTH/2 - scoreText.get_width()/2,
                     HEIGHT/2 - scoreText.get_height()/2))
@@ -205,6 +206,8 @@ class Asteroid(Object):
 class Coin(Object):
     def __init__(self, x, y, width, height, child, image):
         super().__init__(x, y, width, height, child, image)
+        self.x = random.randint(0, WIDTH - self.width)
+        self.y = random.randint(0, HEIGHT - self.height)
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.mask = pygame.mask.from_surface(self.image)
 

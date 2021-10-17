@@ -59,24 +59,33 @@ class Game():
             self.coinSpawned = True
             self.toDraw.append(coin)
     def increaseDifficulty(self):
-        self.timeAlive = int(time.strftime("%S", time.localtime())) - self.startTime
+        self.currentTimeS = int(time.strftime("%S", time.localtime()))
+        self.currentTimeM = int(time.strftime("%M", time.localtime()))
+        self.currentTime = self.currentTimeM * 60 + self.currentTimeS
+        self.timeAlive = self.currentTime - self.startTime
         print(self.timeAlive)
         if self.timeAlive == 5:
-            #Ensures spawn rate is only decreased once not every frame
+            #Ensures spawn rate is only decreased once, not every frame
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
+                print("Asteroid", self.asteroidSpawnRate)
         elif self.timeAlive == 10:
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
+                print("Asteroid", self.asteroidSpawnRate)
         elif self.timeAlive == 15:
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
+                print("Asteroid", self.asteroidSpawnRate)
         elif self.timeAlive > 15 and self.secondsPassed % 5 == 0:
             if self.framesPassed == 0 and self.asteroidSpawnRate > 1:
                 self.asteroidSpawnRate -= 1
+                print("Asteroid", self.asteroidSpawnRate)
     def main(self):
         self.initGame()
-        self.startTime = int(time.strftime("%S", time.localtime()))
+        self.startTimeS = int(time.strftime("%S", time.localtime()))
+        self.startTimeM = int(time.strftime("%M", time.localtime()))
+        self.startTime = self.startTimeM * 60 + self.startTimeS
         while self.lost == False:
             self.clock.tick(self.FPS)
             self.spawnObjects()
@@ -86,7 +95,9 @@ class Game():
                 item.moveSelf()
             self.player.onCollision()
             self.increaseDifficulty()
-        self.endTime = int(time.strftime("%S", time.localtime()))
+        self.endTimeS = int(time.strftime("%S", time.localtime()))
+        self.endTimeM = int(time.strftime("%M", time.localtime()))
+        self.endTime = self.endTimeM * 60 + self.endTimeS
         self.timeAlive = self.endTime - self.startTime
         scoreText = self.mainFont.render("Your score is {}".format(self.score),
                     1, (255, 255, 255))

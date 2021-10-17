@@ -120,7 +120,7 @@ class Object():
        self.width = width
        self.height = height
        self.child = child
-       self.image = image
+       self.image = pygame.transform.scale(image, (self.width, self.height))
     def moveSelf(self):
         pass
     def onCollision(self):
@@ -132,7 +132,6 @@ class Player(Object):
         self.speedY = 0
         self.speedX = 0
         self.acceleration = acceleration
-        self.image = pygame.transform.scale(playerImage, (self.width, self.height))
         self.mask = pygame.mask.from_surface(self.image)
     def moveSelf(self):
         if game.keys[pygame.K_w]:
@@ -219,7 +218,6 @@ class Coin(Object):
         super().__init__(x, y, width, height, child, image)
         self.x = random.randint(0, WIDTH - self.width)
         self.y = random.randint(0, HEIGHT - self.height)
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.mask = pygame.mask.from_surface(self.image)
 
         

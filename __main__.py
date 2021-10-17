@@ -22,7 +22,6 @@ class Game():
         self.FPS = 15
         self.toDraw = []
         self.framesPassed = 0
-        self.secondsPassed = 0
         self.clock = pygame.time.Clock()
         self.score = 0
         self.coinSpawned = False
@@ -32,6 +31,10 @@ class Game():
         WINDOW.blit(BackgroundImage, (0,0))
         for item in self.toDraw:
             WINDOW.blit(item.image, (item.x, item.y))
+        scoreLabel = self.mainFont.render("Score: {}",format(self.score), 1, (255, 255, 255))
+        timeLabel = self.mainFont.render("Time: {}".format(self.timeAlive), 1, (255, 255, 255))
+        WINDOW.blit(scoreLabel, (20, 20))
+        WINDOW.blit(timeLabel, (WIDTH-20, 20))
         pygame.display.update()
     def takeInputs(self):
         for event in pygame.event.get():
@@ -41,7 +44,7 @@ class Game():
     def initGame(self):
         self.toDraw = []
         self.score = 0
-        self.framesPassed, self.secondsPassed = 0, 0
+        self.framesPassed= 0
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
         self.player = Player(int(WIDTH/2), int(HEIGHT/2), 35, 35, "player", playerImage, 1)
@@ -52,7 +55,6 @@ class Game():
         self.framesPassed += 1
         if self.framesPassed == self.FPS:
             self.framesPassed = 0
-            self.secondsPassed += 1
         Asteroid.spawnAsteroid()
         if self.coinSpawned == False:
             coin = Coin(0, 0, 30, 30, "coin", coinImage)
@@ -77,7 +79,7 @@ class Game():
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
                 print("Asteroid", self.asteroidSpawnRate)
-        elif self.timeAlive > 15 and self.secondsPassed % 5 == 0:
+        elif self.timeAlive > 15 and self.timeAlive % 5 == 0:
             if self.framesPassed == 0 and self.asteroidSpawnRate > 1:
                 self.asteroidSpawnRate -= 1
                 print("Asteroid", self.asteroidSpawnRate)

@@ -22,7 +22,7 @@ class Game():
         self.FPS = 15
         self.toDraw = []
         self.framesPassed = 0
-        self.secondsPassed = 0
+        self.timeAlive = 0
         self.clock = pygame.time.Clock()
         self.score = 0
         self.coinSpawned = False
@@ -32,6 +32,10 @@ class Game():
         WINDOW.blit(BackgroundImage, (0,0))
         for item in self.toDraw:
             WINDOW.blit(item.image, (item.x, item.y))
+        scoreLabel = self.mainFont.render("Score: {}".format(self.score), 1, (255, 255, 255))
+        timeLabel = self.mainFont.render("Time: {}".format(self.timeAlive), 1, (255, 255, 255))
+        WINDOW.blit(scoreLabel, (20, 20))
+        WINDOW.blit(timeLabel, (WIDTH-timeLabel.get_width() - 20, 20))
         pygame.display.update()
     def takeInputs(self):
         for event in pygame.event.get():
@@ -41,7 +45,7 @@ class Game():
     def initGame(self):
         self.toDraw = []
         self.score = 0
-        self.framesPassed, self.secondsPassed = 0, 0
+        self.framesPassed= 0
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
         self.player = Player(int(WIDTH/2), int(HEIGHT/2), 35, 35, "player", playerImage, 1)
@@ -52,7 +56,6 @@ class Game():
         self.framesPassed += 1
         if self.framesPassed == self.FPS:
             self.framesPassed = 0
-            self.secondsPassed += 1
         Asteroid.spawnAsteroid()
         if self.coinSpawned == False:
             coin = Coin(0, 0, 30, 30, "coin", coinImage)
@@ -63,7 +66,6 @@ class Game():
         self.currentTimeM = int(time.strftime("%M", time.localtime()))
         self.currentTime = self.currentTimeM * 60 + self.currentTimeS
         self.timeAlive = self.currentTime - self.startTime
-        print(self.timeAlive)
         if self.timeAlive == 5:
             #Ensures spawn rate is only decreased once, not every frame
             if self.framesPassed == 0:
@@ -77,24 +79,16 @@ class Game():
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
                 print("Asteroid", self.asteroidSpawnRate)
-        elif self.timeAlive > 15 and self.secondsPassed % 5 == 0:
+        elif self.timeAlive > 15 and self.timeAlive % 5 == 0:
             if self.framesPassed == 0 and self.asteroidSpawnRate > 1:
                 self.asteroidSpawnRate -= 1
                 print("Asteroid", self.asteroidSpawnRate)
-    def main(self):
-        self.initGame()
-        self.startTimeS = int(time.strftime("%S", time.localtime()))
-        self.startTimeM = int(time.strftime("%M", time.localtime()))
-        self.startTime = self.startTimeM * 60 + self.startTimeS
-        while self.lost == False:
-            self.clock.tick(self.FPS)
-            self.spawnObjects()
-            self.drawFrame()
-            self.takeInputs()
-            for item in self.toDraw:
-                item.moveSelf()
-            self.player.onCollision()
-            self.increaseDifficulty()
+    def menuScreen(self):
+        WINDOW.blit(BackgroundImage, (0,0))
+        startText = self.mainFont.render("Press space to play", 1, (255, 255, 255))
+        WINDOW.blit(startText, (WIDTH/2 - startText.get_width()/2, HEIGHT/2 - startText.get_height()/2))
+        pygame.display.update()
+    def endScreen(self):
         self.endTimeS = int(time.strftime("%S", time.localtime()))
         self.endTimeM = int(time.strftime("%M", time.localtime()))
         self.endTime = self.endTimeM * 60 + self.endTimeS
@@ -108,10 +102,31 @@ class Game():
         WINDOW.blit(timeText, (WIDTH/2 - timeText.get_width()/2,
                     HEIGHT/2 - scoreText.get_height() - timeText.get_height()/2))
         pygame.display.update()
+    def main(self):
+        self.initGame()
+        self.startTimeS = int(time.strftime("%S", time.localtime()))
+        self.startTimeM = int(time.strftime("%M", time.localtime()))
+        self.startTime = self.startTimeM * 60 + self.startTimeS
+        while self.lost == False:
+            self.clock.tick(self.FPS)
+            self.spawnObjects()
+            self.takeInputs()
+            for item in self.toDraw:
+                item.moveSelf()
+            self.player.onCollision()
+            self.increaseDifficulty()
+            self.drawFrame()
+        self.endScreen()
         time.sleep(2)
+        self.menuScreen()
     def mainMenu(self):
+        self.menuScreen()
         while self.run:
-            self.main()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
+                self.main()
 
 class Object():
     def __init__(self, x, y, width, height, child, image):

@@ -66,7 +66,6 @@ class Game():
         self.currentTimeM = int(time.strftime("%M", time.localtime()))
         self.currentTime = self.currentTimeM * 60 + self.currentTimeS
         self.timeAlive = self.currentTime - self.startTime
-        print(self.timeAlive)
         if self.timeAlive == 5:
             #Ensures spawn rate is only decreased once, not every frame
             if self.framesPassed == 0:
@@ -85,7 +84,6 @@ class Game():
                 self.asteroidSpawnRate -= 1
                 print("Asteroid", self.asteroidSpawnRate)
     def menuScreen(self):
-        print("Menu screen ran")
         WINDOW.blit(BackgroundImage, (0,0))
         startText = self.mainFont.render("Press space to play", 1, (255, 255, 255))
         WINDOW.blit(startText, (WIDTH/2 - startText.get_width()/2, HEIGHT/2 - startText.get_height()/2))
@@ -124,9 +122,10 @@ class Game():
     def mainMenu(self):
         self.menuScreen()
         while self.run:
-            keys = pygame.key.get_pressed()
-            if True:
-                print("Play!")
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
                 self.main()
 
 class Object():

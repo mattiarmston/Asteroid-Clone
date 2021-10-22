@@ -32,8 +32,10 @@ class Game():
         WINDOW.blit(BackgroundImage, (0,0))
         for item in self.toDraw:
             WINDOW.blit(item.image, (item.x, item.y))
-        scoreLabel = self.mainFont.render("Score: {}".format(self.score), 1, (255, 255, 255))
-        timeLabel = self.mainFont.render("Time: {}".format(self.timeAlive), 1, (255, 255, 255))
+        scoreLabel = self.mainFont.render("Score: {}".format(self.score),
+                     1, (255, 255, 255))
+        timeLabel = self.mainFont.render("Time: {}".format(self.timeAlive),
+                    1, (255, 255, 255))
         WINDOW.blit(scoreLabel, (20, 20))
         WINDOW.blit(timeLabel, (WIDTH-timeLabel.get_width() - 20, 20))
         pygame.display.update()

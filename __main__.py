@@ -50,7 +50,7 @@ class Game():
         self.framesPassed= 0
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
-        self.player = Player(int(WIDTH/2), int(HEIGHT/2), 35, 35, playerImage, 1)
+        self.player = Player(int(WIDTH/2), int(HEIGHT/2), 35, 35, playerImage, self, 1)
         self.toDraw.append(self.player)
         self.lost = False
     def spawnObjects(self):
@@ -58,9 +58,9 @@ class Game():
         self.framesPassed += 1
         if self.framesPassed == self.FPS:
             self.framesPassed = 0
-        Asteroid.spawnAsteroid()
+        Asteroid.spawnAsteroid(self)
         if self.coinSpawned == False:
-            coin = Coin(0, 0, 30, 30, coinImage)
+            coin = Coin(0, 0, 30, 30, coinImage, self)
             self.coinSpawned = True
             self.toDraw.append(coin)
     def increaseDifficulty(self):
@@ -115,13 +115,14 @@ class Game():
             self.takeInputs()
             for item in self.toDraw:
                 item.moveSelf()
-            self.player.onCollision()
+            self.player.checkCollision()
             self.increaseDifficulty()
             self.drawFrame()
         self.endScreen()
         time.sleep(2)
         self.menuScreen()
     def mainMenu(self):
+        pygame.mouse.set_visible(False)
         self.menuScreen()
         while self.run:
             for event in pygame.event.get():
@@ -131,32 +132,33 @@ class Game():
                 self.main()
 
 class Object():
-    def __init__(self, x, y, width, height, image):
+    def __init__(self, x, y, width, height, image, game):
        self.x = x
        self.y = y
        self.width = width
        self.height = height
        self.image = pygame.transform.scale(image, (self.width, self.height))
+       self.game = game
     def moveSelf(self):
         pass
     def onCollision(self):
         pass
 
 class Player(Object):
-    def __init__(self, x, y, width, height, image, acceleration):
-        super().__init__(x, y, width, height, image)
+    def __init__(self, x, y, width, height, image, game, acceleration):
+        super().__init__(x, y, width, height, image, game)
         self.speedY = 0
         self.speedX = 0
         self.acceleration = acceleration
         self.mask = pygame.mask.from_surface(self.image)
     def moveSelf(self):
-        if game.keys[pygame.K_w]:
+        if self.game.keys[pygame.K_w]:
             self.speedY -= self.acceleration
-        if game.keys[pygame.K_s]:
+        if self.game.keys[pygame.K_s]:
             self.speedY += self.acceleration
-        if game.keys[pygame.K_a]:
+        if self.game.keys[pygame.K_a]:
             self.speedX -= self.acceleration
-        if game.keys[pygame.K_d]:
+        if self.game.keys[pygame.K_d]:
             self.speedX += self.acceleration
         if self.y + self.speedY + self.height > HEIGHT:
             self.y = HEIGHT - self.height
@@ -174,30 +176,30 @@ class Player(Object):
             self.speedX = 0
         else:
             self.x += self.speedX
-    def onCollision(self):
-        for item in game.toDraw:
+    def checkCollision(self):
+        for item in self.game.toDraw:
             offsetX = item.x - self.x
             offsetY = item.y - self.y
             if self.mask.overlap(item.mask, (offsetX, offsetY)) != None:
                 if type(item) == Asteroid:
-                    game.lost = True
+                    self.game.lost = True
                 elif type(item) == Coin:
-                    game.score += 1
-                    game.toDraw.remove(item)
-                    game.coinSpawned = False
+                    self.game.score += 1
+                    self.game.toDraw.remove(item)
+                    self.game.coinSpawned = False
 
 class Asteroid(Object):
-    def __init__(self, width, height, speedX, speedY, image, x=0, y=0):
-        super().__init__(x, y, width, height, image)
+    def __init__(self, width, height, speedX, speedY, image, game, x=0, y=0):
+        super().__init__(x, y, width, height, image, game)
         self.speedX = speedX
         self.speedY = speedY
         self.mask = pygame.mask.from_surface(self.image)
         #Sets x and y position and ensures asteroids move onto screen
         self.spawnLocation()
-    def spawnAsteroid():
-        if game.framesPassed % game.asteroidSpawnRate == 0:
-            asteroid = Asteroid(50, 50, random.randint(-15, 15), random.randint(-15,15), asteroidImage)
-            game.toDraw.append(asteroid)
+    def spawnAsteroid(self):
+        if self.framesPassed % self.asteroidSpawnRate == 0:
+            asteroid = Asteroid(50, 50, random.randint(-15, 15), random.randint(-15,15), asteroidImage, self)
+            self.toDraw.append(asteroid)
     def spawnLocation(self):
         #Decides whether asteroid spaws on left/right or top/bottom edge of the screen
         if random.randint(0,1) == 1:
@@ -229,19 +231,19 @@ class Asteroid(Object):
         self.y += self.speedY
 
 class Coin(Object):
-    def __init__(self, x, y, width, height, image):
-        super().__init__(x, y, width, height, image)
+    def __init__(self, x, y, width, height, image, game):
+        super().__init__(x, y, width, height, image, game)
         self.x = random.randint(0, WIDTH - self.width)
         self.y = random.randint(0, HEIGHT - self.height)
         self.mask = pygame.mask.from_surface(self.image)
 
         
-game = Game()
-game.mainMenu()
+#game = Game()
+#game.mainMenu()
 
-#def main():
-#    game = Game()
-#    game.mainMenu()
-#
-#if __name__ == "__main__":
-#    main()
+def main():
+    game = Game()
+    game.mainMenu()
+
+if __name__ == "__main__":
+    main()

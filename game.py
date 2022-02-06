@@ -9,8 +9,8 @@ from coin import Coin
 
 class Game():
     def __init__(self):
-        self.window = Window()
-        self.assets = Assets(self.window)
+        self.window = Window(self)
+        self.assets = Assets(self.window, self)
         self.run = True
         self.lost = False
         self.FPS = 15
@@ -19,21 +19,10 @@ class Game():
         self.timeAlive = 0
         self.clock = pygame.time.Clock()
         self.score = 0
+        self.highscore = -1
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
-        self.mainFont = pygame.font.SysFont("comicsans", 70)
-
-    def drawFrame(self):
-        self.window.window.blit(self.assets.BackgroundImage, (0,0))
-        for item in self.toDraw:
-            self.window.window.blit(item.image, (item.x, item.y))
-        scoreLabel = self.mainFont.render("Score: {}".format(self.score),
-                     1, (255, 255, 255))
-        timeLabel = self.mainFont.render("Time: {}".format(self.timeAlive),
-                    1, (255, 255, 255))
-        self.window.window.blit(scoreLabel, (20, 20))
-        self.window.window.blit(timeLabel, (self.window.width-timeLabel.get_width() - 20, 20))
-        pygame.display.update()
+        self.mainFont = pygame.font.SysFont("monospace", 40)
 
     def takeInputs(self):
         for event in pygame.event.get():
@@ -47,9 +36,20 @@ class Game():
         self.framesPassed= 0
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
-        self.player = Player(int(self.window.width/2), int(self.window.height/2), 35, 35, self.assets.playerImage, self, 1)
+        self.player = Player(
+            int(self.window.width/2),
+            int(self.window.height/2),
+            35,
+            35,
+            self.assets.playerImage,
+            self,
+            1
+        )
         self.toDraw.append(self.player)
         self.lost = False
+
+    def menuScreen(self):
+        self.window.menuScreen()
 
     def spawnObjects(self):
         #Used for spawning x asteroids per second. Need to find better solution.
@@ -63,12 +63,10 @@ class Game():
             self.toDraw.append(coin)
 
     def increaseDifficulty(self):
-        self.currentTimeS = int(time.strftime("%S", time.localtime()))
-        self.currentTimeM = int(time.strftime("%M", time.localtime()))
-        self.currentTime = self.currentTimeM * 60 + self.currentTimeS
+        self.currentTime = time.time()
         self.timeAlive = self.currentTime - self.startTime
         if self.timeAlive == 5:
-            #Ensures spawn rate is only decreased once, not every frame
+            # Ensures spawn rate is only decreased once, not every frame
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
                 print("Asteroid", self.asteroidSpawnRate)
@@ -85,32 +83,17 @@ class Game():
                 self.asteroidSpawnRate -= 1
                 print("Asteroid", self.asteroidSpawnRate)
 
-    def menuScreen(self):
-        self.window.window.blit(self.assets.BackgroundImage, (0,0))
-        startText = self.mainFont.render("Press space to play", 1, (255, 255, 255))
-        self.window.window.blit(startText, (self.window.width/2 - startText.get_width()/2, self.window.height/2 - startText.get_height()/2))
-        pygame.display.update()
-
     def endScreen(self):
-        self.endTimeS = int(time.strftime("%S", time.localtime()))
-        self.endTimeM = int(time.strftime("%M", time.localtime()))
-        self.endTime = self.endTimeM * 60 + self.endTimeS
+        bufferheight = 5
+        self.endTime = time.time()
         self.timeAlive = self.endTime - self.startTime
-        scoreText = self.mainFont.render("Your score is {}".format(self.score),
-                    1, (255, 255, 255))
-        timeText = self.mainFont.render("You survived for {} seconds".format(self.timeAlive),
-                   1, (255, 255, 255))
-        self.window.window.blit(scoreText, (self.window.width/2 - scoreText.get_width()/2,
-                    self.window.height/2 - scoreText.get_height()/2))
-        self.window.window.blit(timeText, (self.window.width/2 - timeText.get_width()/2,
-                    self.window.height/2 - scoreText.get_height() - timeText.get_height()/2))
-        pygame.display.update()
+        if self.score > self.highscore:
+            self.highscore = self.score
+        self.window.endScreen(self.timeAlive)
 
-    def main(self):
+    def main(self, playerName):
         self.initGame()
-        self.startTimeS = int(time.strftime("%S", time.localtime()))
-        self.startTimeM = int(time.strftime("%M", time.localtime()))
-        self.startTime = self.startTimeM * 60 + self.startTimeS
+        self.startTime = time.time()
         while self.lost == False:
             self.clock.tick(self.FPS)
             self.spawnObjects()
@@ -119,17 +102,17 @@ class Game():
                 item.moveSelf()
             self.player.checkCollision()
             self.increaseDifficulty()
-            self.drawFrame()
+            self.window.drawFrame()
         self.endScreen()
         time.sleep(2)
-        self.menuScreen()
+        self.window.menuScreen()
 
     def mainMenu(self):
         pygame.mouse.set_visible(False)
-        self.menuScreen()
+        playerName = self.menuScreen()
         while self.run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     quit()
-            if pygame.key.get_pressed()[pygame.K_SPACE]:
-                self.main()
+            if pygame.key.get_pressed()[pygame.K_RETURN]:
+                self.main(playerName)

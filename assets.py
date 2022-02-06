@@ -2,7 +2,8 @@ import pygame
 import os
 
 class Assets():
-    def __init__(self, window):
+    def __init__(self, window, game):
+        self.game = game
         self.BackgroundImage = pygame.transform.scale(
             pygame.image.load(os.path.join("assets", "blankBG.png")),
             (window.width, window.height)

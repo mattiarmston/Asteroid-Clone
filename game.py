@@ -20,9 +20,10 @@ class Game():
         self.clock = pygame.time.Clock()
         self.score = 0
         self.highscore = -1
+        self.longestTime = -1
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
-        self.mainFont = pygame.font.SysFont("monospace", 40)
+        self.mainFont = pygame.font.SysFont("monospace", 40, bold=True)
 
     def takeInputs(self):
         for event in pygame.event.get():
@@ -49,7 +50,55 @@ class Game():
         self.lost = False
 
     def menuScreen(self):
+        def getName():
+            name = ''
+            for letter in letters:
+                name += letter
+            self.name = name
+
+        self.name = ''
+        letters = []
         self.window.menuScreen()
+        nonText = [pygame.K_TAB, pygame.K_CLEAR, pygame.K_RETURN, pygame.K_PAUSE, pygame.K_ESCAPE,
+                pygame.K_CAPSLOCK, pygame.K_UP, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_LEFT,
+                pygame.K_INSERT, pygame.K_HOME, pygame.K_END, pygame.K_PAGEUP, pygame.K_PAGEDOWN]
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                elif pygame.key.get_pressed()[pygame.K_RETURN]:
+                    getName()
+                    return self.name
+                elif event.type == pygame.KEYDOWN:
+                    if event.mod & pygame.KMOD_LSHIFT:
+                        keypressed = pygame.key.name(event.key)
+                        letters.append(keypressed.upper())
+                        if letters[-1] == 'LEFT SHIFT':
+                            letters.pop()
+                    if event.mod & pygame.KMOD_RSHIFT:
+                        keypressed = pygame.key.name(event.key)
+                        letters.append(keypressed.upper())
+                        if letters[-1] == 'RIGHT SHIFT':
+                            letters.pop()
+                    elif event.key == pygame.K_SPACE:
+                        letters.append(' ')
+                    elif event.key in nonText:
+                        pass
+                    elif pygame.key.get_mods() & event.mod:
+                        if event.key == pygame.K_BACKSPACE and event.mod & pygame.KMOD_CTRL:
+                            # for letter in letters:
+                            #     letters.pop()
+                            letters = []
+                    elif pygame.key.get_pressed()[pygame.K_BACKSPACE]:
+                        try:
+                            letters.pop()
+                        except:
+                            pass
+                    else:
+                        keypressed = pygame.key.name(event.key)
+                        letters.append(keypressed)
+            getName()
+            self.window.menuScreen()
 
     def spawnObjects(self):
         #Used for spawning x asteroids per second. Need to find better solution.
@@ -65,31 +114,33 @@ class Game():
     def increaseDifficulty(self):
         self.currentTime = time.time()
         self.timeAlive = self.currentTime - self.startTime
-        if self.timeAlive == 5:
+        if int(self.timeAlive) == 5:
             # Ensures spawn rate is only decreased once, not every frame
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
                 print("Asteroid", self.asteroidSpawnRate)
-        elif self.timeAlive == 10:
+        elif int(self.timeAlive) == 10:
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
                 print("Asteroid", self.asteroidSpawnRate)
-        elif self.timeAlive == 15:
+        elif int(self.timeAlive) == 15:
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
                 print("Asteroid", self.asteroidSpawnRate)
-        elif self.timeAlive > 15 and self.timeAlive % 5 == 0:
+        elif int(self.timeAlive) > 15 and int(self.timeAlive) % 5 == 0:
             if self.framesPassed == 0 and self.asteroidSpawnRate > 1:
                 self.asteroidSpawnRate -= 1
                 print("Asteroid", self.asteroidSpawnRate)
 
-    def endScreen(self):
+    def endScreen(self, playerName):
         bufferheight = 5
         self.endTime = time.time()
         self.timeAlive = self.endTime - self.startTime
         if self.score > self.highscore:
             self.highscore = self.score
-        self.window.endScreen(self.timeAlive)
+        if self.timeAlive > self.longestTime:
+            self.longestTime = self.timeAlive
+        self.window.endScreen(self.timeAlive, playerName)
 
     def main(self, playerName):
         self.initGame()
@@ -103,12 +154,11 @@ class Game():
             self.player.checkCollision()
             self.increaseDifficulty()
             self.window.drawFrame()
-        self.endScreen()
+        self.endScreen(playerName)
         time.sleep(2)
         self.window.menuScreen()
 
     def mainMenu(self):
-        pygame.mouse.set_visible(False)
         playerName = self.menuScreen()
         while self.run:
             for event in pygame.event.get():

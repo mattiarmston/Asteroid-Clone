@@ -25,41 +25,78 @@ class Window():
 
     def menuScreen(self):
         self.window.blit(self.game.assets.BackgroundImage, (0,0))
-        startText = self.game.mainFont.render("Press enter to play", 1, (150, 150, 150))
+        self.promptText = self.game.mainFont.render(
+            "Enter your name:",
+            1,
+            (150, 150, 150)
+        )
+        nameText = self.game.mainFont.render(
+            self.game.name,
+            1,
+            (150, 150, 150)
+        )
+        continueText = self.game.mainFont.render(
+             "Press enter to play",
+             1,
+             (150, 150, 150)
+        )
         self.window.blit(
-            startText,
-            (self.width/2 - startText.get_width()/2,
-            self.height/2 - startText.get_height()/2)
+            self.promptText,
+            (self.width/2 - self.promptText.get_width()/2,
+            self.height/2.25)
+        )
+        self.window.blit(
+            nameText,
+            (self.width/2 - nameText.get_width()/2,
+            self.height/2.25+ self.promptText.get_height())
+        )
+        self.window.blit(
+            continueText,
+            (self.width/2 - continueText.get_width()/2,
+            self.height/2.25+ self.promptText.get_height() + self.promptText.get_height())
         )
         pygame.display.update()
 
-    def endScreen(self, timeAlive):
+    def endScreen(self, timeAlive, playerName):
         bufferheight = 5
+        playerNameText = self.game.mainFont.render(
+            "Player: {}".format(playerName),
+            1, (150, 150, 150)
+        )
         timeText = self.game.mainFont.render(
-            "You survived for %.2f seconds" % self.game.timeAlive,
+            "Survived: %.2f seconds" % self.game.timeAlive,
+            1, (150, 150, 150)
+        )
+        longestTimeText = self.game.mainFont.render(
+            "Longest time: %.2f seconds" % self.game.longestTime,
             1, (150, 150, 150)
         )
         scoreText = self.game.mainFont.render(
-            "Your score is {}".format(self.game.score),
+            "Score: {}".format(self.game.score),
             1, (150, 150, 150)
         )
         highscoreText = self.game.mainFont.render(
-            "Your highscore is {}".format(self.game.highscore),
+            "Highscore: {}".format(self.game.highscore),
             1, (150, 150, 150)
+        )
+        self.window.blit(
+            playerNameText,
+            (self.width/2 - playerNameText.get_width()/2,
+            self.height/2.25)
         )
         self.window.blit(
             scoreText,
             (self.width/2 - scoreText.get_width()/2,
-            self.height/2 - scoreText.get_height()/2)
+            self.height/2.25 + playerNameText.get_height())
         )
         self.window.blit(
             highscoreText,
             (self.width/2 - highscoreText.get_width()/2,
-            self.height/2 + highscoreText.get_height()/2 + bufferheight)
+            self.height/2.25 + playerNameText.get_height() + scoreText.get_height())
         )
         self.window.blit(
             timeText,
             (self.width/2 - timeText.get_width()/2,
-            self.height/2 - scoreText.get_height() - timeText.get_height()/2 - bufferheight)
+            self.height/2.25 + highscoreText.get_height() + scoreText.get_height() + playerNameText.get_height())
         )
         pygame.display.update()

@@ -13,13 +13,13 @@ class Player(GameObject):
         self.mask = pygame.mask.from_surface(self.image)
 
     def moveSelf(self):
-        if self.game.keys[pygame.K_w]:
+        if self.game.keys[pygame.K_w] or self.game.keys[pygame.K_UP]:
             self.speedY -= self.acceleration
-        if self.game.keys[pygame.K_s]:
+        if self.game.keys[pygame.K_s] or self.game.keys[pygame.K_DOWN]:
             self.speedY += self.acceleration
-        if self.game.keys[pygame.K_a]:
+        if self.game.keys[pygame.K_a] or self.game.keys[pygame.K_LEFT]:
             self.speedX -= self.acceleration
-        if self.game.keys[pygame.K_d]:
+        if self.game.keys[pygame.K_d] or self.game.keys[pygame.K_RIGHT]:
             self.speedX += self.acceleration
         if self.y + self.speedY + self.height > self.game.window.height:
             self.y = self.game.window.height - self.height

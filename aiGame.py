@@ -9,8 +9,8 @@ from coin import Coin
 
 class Game():
     def __init__(self):
-        self.window = Window()
-        self.assets = Assets(self.window)
+        self.window = Window(self)
+        self.assets = Assets(self.window, self)
         self.run = True
         self.lost = False
         self.FPS = 15
@@ -21,15 +21,14 @@ class Game():
         self.score = 0
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
-        self.mainFont = pygame.font.SysFont("comicsans", 70)
 
     def drawFrame(self):
         self.window.window.blit(self.assets.BackgroundImage, (0,0))
         for item in self.toDraw:
             self.window.window.blit(item.image, (item.x, item.y))
-        scoreLabel = self.mainFont.render("Score: {}".format(self.score),
+        scoreLabel = self.assets.mainFont.render("Score: {}".format(self.score),
                      1, (255, 255, 255))
-        timeLabel = self.mainFont.render("Time: {}".format(self.timeAlive),
+        timeLabel = self.assets.mainFont.render("Time: {}".format(self.timeAlive),
                     1, (255, 255, 255))
         self.window.window.blit(scoreLabel, (20, 20))
         self.window.window.blit(timeLabel, (self.window.width-timeLabel.get_width() - 20, 20))
@@ -89,7 +88,7 @@ class Game():
 
     def menuScreen(self):
         self.window.window.blit(self.assets.BackgroundImage, (0,0))
-        startText = self.mainFont.render("Press space to play", 1, (255, 255, 255))
+        startText = self.assets.mainFont.render("Press space to play", 1, (255, 255, 255))
         self.window.window.blit(
             startText,
             (self.window.width/2 - startText.get_width()/2, self.window.height/2 - startText.get_height()/2)
@@ -101,11 +100,11 @@ class Game():
         self.endTimeM = int(time.strftime("%M", time.localtime()))
         self.endTime = self.endTimeM * 60 + self.endTimeS
         self.timeAlive = self.endTime - self.startTime
-        scoreText = self.mainFont.render(
+        scoreText = self.assets.mainFont.render(
             "Your score is {}".format(self.score),
             1, (255, 255, 255)
         )
-        timeText = self.mainFont.render(
+        timeText = self.assets.mainFont.render(
             "You survived for {} seconds".format(self.timeAlive),
             1, (255, 255, 255)
         )

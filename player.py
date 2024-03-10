@@ -44,7 +44,7 @@ class Player(GameObject):
             offsetY = item.y - self.y
             if self.mask.overlap(item.mask, (offsetX, offsetY)) != None:
                 if type(item) == Asteroid:
-                    self.game.lost = True
+                    self.game.playerDead()
                 elif type(item) == Coin:
                     self.game.score += 1
                     self.game.toDraw.remove(item)

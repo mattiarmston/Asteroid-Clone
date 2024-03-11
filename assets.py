@@ -8,9 +8,12 @@ class Assets():
             pygame.image.load(os.path.join("assets", "blankBG.png")),
             (window.width, window.height)
         )
-        self.playerImage = pygame.image.load(os.path.join("assets", "playerImage.png"))
-        self.asteroidImage = pygame.image.load(os.path.join("assets", "asteroidImage.png"))
-        self.coinImage = pygame.image.load(os.path.join("assets", "coinImage.png"))
+        self.playerImage = pygame.image.load(
+            os.path.join("assets", "player2.png"))
+        self.asteroidImage = pygame.image.load(
+            os.path.join("assets", "asteroid.png"))
+        self.coinImage = pygame.image.load(
+            os.path.join("assets", "jerry_can.png"))
         self.mainFont = pygame.font.SysFont("monospace", 40)
         # Replace with custom pixel font
         #self.mainFont = pygame.font.Font("assets/pixel_font.ttf", 40)

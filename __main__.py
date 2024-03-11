@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
 
-import pygame
 import argparse
+import json
+import pygame
 
 from game import Game
 
 def parseArgs():
-    parser = argparse.ArgumentParser(description='Process command line arguments')
-    parser.add_argument('--version', action='store_true', help='output version information and exit')
-    parser.add_argument('--ai', action='store_true', help='uses neat to train ai to play')
+    parser = argparse.ArgumentParser(
+        description='Process command line arguments')
+    parser.add_argument(
+        '--version',
+        action='store_true',
+        help='output version information and exit'
+    )
+    #parser.add_argument(
+    #    '--ai',
+    #    action='store_true',
+    #    help='uses neat to train ai to play'
+    #)
     return parser.parse_args()
 
 def main():
@@ -16,29 +26,40 @@ def main():
     args = parseArgs()
     loadGame(args)
 
+def loadHighscores():
+    try:
+        with open("highscores.json", 'r') as file:
+            scores = json.load(file)
+    except Exception:
+        scores = []
+        print("Error cannot load highscores")
+    return scores
+
 def loadGame(args):
     def player():
-        game = Game()
+        scores = loadHighscores()
+        game = Game(scores)
         game.mainMenu()
 
     def ai():
-        import neat
         startNeat()
 
     def version():
-        print("Version {}".format('0.3.0'))
+        print("Version {}".format('0.4.0'))
         print("This project is still in active development")
         print("Visit https://github.com/crus4d3/asteroid-clone for the latest version")
 
     if args.version:
         version()
         quit()
-    if args.ai:
-        ai()
+    #if args.ai:
+    #    ai()
     else:
         player()
 
 def startNeat():
+    return
+    import neat
     config = neat.config.Config(
         neat.genome.DefaultGenome,
         neat.reproduction.DefaultReproduction,

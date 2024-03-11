@@ -41,11 +41,11 @@ class Window():
             1, (150, 150, 150)
         )
         objectiveText = self.game.assets.mainFont.render(
-            "Collect yellow Coins and",
+            "Avoid Asteroids and collect fuel",
             1, (150, 150, 150)
         )
         objectiveText2 = self.game.assets.mainFont.render(
-            "avoid grey Asteriods",
+            "to survive as long as possible",
             1, (150, 150, 150)
         )
         backText = self.game.assets.mainFont.render(
@@ -88,8 +88,17 @@ class Window():
             "Time: %.2f" % self.game.timeAlive,
             1, (150, 150, 150)
         )
+        fuelLabel = self.game.assets.mainFont.render(
+            "Fuel: {}".format(self.game.player.fuel),
+            1, (150, 150, 150)
+        )
         self.window.blit(scoreLabel, (20, 20))
-        self.window.blit(timeLabel, (self.width - timeLabel.get_width() - 20, 20))
+        self.window.blit(
+            fuelLabel, (self.width/2 - fuelLabel.get_width()/2, 20)
+        )
+        self.window.blit(
+            timeLabel, (self.width - timeLabel.get_width() - 20, 20)
+        )
         pygame.display.update()
 
     def endScreen(self):

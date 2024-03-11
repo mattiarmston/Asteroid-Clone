@@ -1,3 +1,4 @@
+import json
 import pygame
 import time
 
@@ -8,7 +9,7 @@ from asteroid import Asteroid
 from coin import Coin
 
 class Game():
-    def __init__(self):
+    def __init__(self, scores):
         self.window = Window(self)
         self.assets = Assets(self.window, self)
         self.lost = False
@@ -17,16 +18,31 @@ class Game():
         self.framesPassed = 0
         self.timeAlive = 0
         self.clock = pygame.time.Clock()
+        self.scores = scores
         self.score = 0
-        self.highscore = 0
+        self.highscore = self.getHighscore()
         self.longestTime = -1
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
 
+    @staticmethod
+    def getScore(entry):
+        print(entry)
+        print(entry[2])
+        return entry[2]
+
+    def getHighscore(self):
+        if self.scores == []:
+            return 0
+        print("pre", self.scores)
+        self.scores.sort(key=self.getScore)
+        print("post", self.scores)
+        return self.scores[-1][2]
+
     def takeInputs(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                quit()
+                self.quitGame()
         self.keys = pygame.key.get_pressed()
 
     def initGame(self):
@@ -38,8 +54,8 @@ class Game():
         self.player = Player(
             int(self.window.width/2),
             int(self.window.height/2),
-            35,
-            35,
+            32,
+            32,
             self.assets.playerImage,
             self,
             1
@@ -54,7 +70,7 @@ class Game():
             self.framesPassed = 0
         Asteroid.spawnAsteroid(self)
         if self.coinSpawned == False:
-            coin = Coin(0, 0, 30, 30, self.assets.coinImage, self)
+            coin = Coin(0, 0, 32, 32, self.assets.coinImage, self)
             self.coinSpawned = True
             self.toDraw.append(coin)
 
@@ -88,6 +104,8 @@ class Game():
         done = False
         while not done:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quitGame()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         done = True
@@ -101,7 +119,7 @@ class Game():
             pygame.time.Clock().tick(60)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    quit()
+                    self.quitGame()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         done = True
@@ -116,22 +134,33 @@ class Game():
         pygame.key.stop_text_input()
         return playerName
 
-    def setHighscore(self):
+    def setHighscore(self, playerName):
         self.timeAlive = self.endTime - self.startTime
         if self.score > self.highscore:
             self.highscore = self.score
         if self.timeAlive > self.longestTime:
             self.longestTime = self.timeAlive
+        self.scores.append([playerName, self.timeAlive, self.score])
+        self.scores.sort(key=self.getScore)
 
     def help(self):
         self.window.help()
         done = False
         while not done:
             for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quitGame()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         done = True
         return
+
+    def quitGame(self):
+        with open("highscores.json", "w") as file:
+            jsonString = json.dumps(self.scores)
+            file.write(jsonString)
+            file.write("\n")
+        quit()
 
     def main(self):
         self.initGame()
@@ -147,7 +176,7 @@ class Game():
             self.window.drawFrame()
         self.endScreen()
         playerName = self.enterName()
-        self.setHighscore()
+        self.setHighscore(playerName)
         return
 
     def mainMenu(self):
@@ -158,7 +187,7 @@ class Game():
             while not confirmed:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        quit()
+                        self.quitGame()
                     if event.type == pygame.KEYDOWN:
                         if event.key in [pygame.K_UP, pygame.K_w]:
                             selected -= 1

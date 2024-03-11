@@ -11,6 +11,8 @@ class Player(GameObject):
         self.speedX = 0
         self.acceleration = acceleration
         self.mask = pygame.mask.from_surface(self.image)
+        self.maxfuel = 10 * self.game.FPS
+        self.fuel = self.maxfuel
 
     def moveSelf(self):
         if self.game.keys[pygame.K_w] or self.game.keys[pygame.K_UP]:
@@ -37,6 +39,9 @@ class Player(GameObject):
             self.speedX = 0
         else:
             self.x += self.speedX
+        self.fuel -= 1
+        #if self.fuel < 1:
+        #    self.game.playerDead()
 
     def checkCollision(self):
         for item in self.game.toDraw:
@@ -46,6 +51,7 @@ class Player(GameObject):
                 if type(item) == Asteroid:
                     self.game.playerDead()
                 elif type(item) == Coin:
+                    self.fuel = self.maxfuel
                     self.game.score += 1
                     self.game.toDraw.remove(item)
                     self.game.coinSpawned = False

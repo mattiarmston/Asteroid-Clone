@@ -12,7 +12,6 @@ class Asteroid(GameObject):
         self.image = pygame.transform.rotate(
             self.image, random.randint(0, 3) * 90
         )
-        self.mask = pygame.mask.from_surface(self.image)
         #Sets x and y position and ensures asteroids move onto screen
         self.spawnLocation()
 

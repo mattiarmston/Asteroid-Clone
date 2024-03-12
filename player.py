@@ -1,3 +1,4 @@
+import math
 import pygame
 
 from gameObject import GameObject
@@ -10,11 +11,16 @@ class Player(GameObject):
         self.speedY = 0
         self.speedX = 0
         self.acceleration = acceleration
-        self.mask = pygame.mask.from_surface(self.image)
+        self.imageEast = self.image
         self.maxfuel = 10 * self.game.FPS
         self.fuel = self.maxfuel
 
     def moveSelf(self):
+        self.updatePos()
+        self.updateDir()
+        self.updateFuel()
+
+    def updatePos(self):
         if self.game.keys[pygame.K_w] or self.game.keys[pygame.K_UP]:
             self.speedY -= self.acceleration
         if self.game.keys[pygame.K_s] or self.game.keys[pygame.K_DOWN]:
@@ -39,9 +45,29 @@ class Player(GameObject):
             self.speedX = 0
         else:
             self.x += self.speedX
+        return
+
+    def updateDir(self):
+        # The trigonometry here assumes that a positive dY means an upward,
+        # moving player.
+        speedY = self.speedY * -1
+        if self.speedX == 0:
+            if speedY < 0:
+                theta = -90
+            else:
+                theta = 90
+        else:
+            thetaRad = math.atan(speedY / self.speedX)
+            theta = math.degrees(thetaRad)
+            if self.speedX < 0:
+                theta += 180
+        self.image = pygame.transform.rotate(self.imageEast, theta)
+        return
+
+    def updateFuel(self):
         self.fuel -= 1
-        #if self.fuel < 1:
-        #    self.game.playerDead()
+        if self.fuel < 1:
+            self.game.playerDead()
 
     def checkCollision(self):
         for item in self.game.toDraw:

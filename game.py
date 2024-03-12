@@ -27,16 +27,12 @@ class Game():
 
     @staticmethod
     def getScore(entry):
-        print(entry)
-        print(entry[2])
         return entry[2]
 
     def getHighscore(self):
         if self.scores == []:
             return 0
-        print("pre", self.scores)
         self.scores.sort(key=self.getScore)
-        print("post", self.scores)
         return self.scores[-1][2]
 
     def takeInputs(self):
@@ -81,19 +77,15 @@ class Game():
             # Ensures spawn rate is only decreased once, not every frame
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
-                print("Asteroid", self.asteroidSpawnRate)
         elif int(self.timeAlive) == 10:
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
-                print("Asteroid", self.asteroidSpawnRate)
         elif int(self.timeAlive) == 15:
             if self.framesPassed == 0:
                 self.asteroidSpawnRate -= 5
-                print("Asteroid", self.asteroidSpawnRate)
         elif int(self.timeAlive) > 15 and int(self.timeAlive) % 5 == 0:
             if self.framesPassed == 0 and self.asteroidSpawnRate > 1:
                 self.asteroidSpawnRate -= 1
-                print("Asteroid", self.asteroidSpawnRate)
 
     def playerDead(self):
         self.lost = True

@@ -7,6 +7,7 @@ class GameObject():
        self.width = width
        self.height = height
        self.image = pygame.transform.scale(image, (self.width, self.height))
+       self.mask = pygame.mask.from_surface(self.image)
        self.game = game
 
     def moveSelf(self):

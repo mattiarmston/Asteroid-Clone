@@ -1,17 +1,29 @@
-# Asteroid-Clone
+# ![image info](./assets/player2.png) Asteroid-Clone 
 
-![image info](./assets/player2.png)
+![image info](./assets/screenshot2.png)
 
 Survive as long as you can in this asteroid-inspired retro game. Dodge asteroids
 and collect fuel cans to keep your space ship in running order as long as you
 can.
 
-## Installation
+## Quick start
 
-1. Ensure pygame is installed, if not run: `pip install pygame`
+1. Ensure pygame is installed, if not run: 
+```bash
+pip install pygame
+```
 2. Clone the repository
+```bash
+git clone https://github.com/Crus4d3/Asteroid-Clone.git
+```
 3. Navigate to the installation directory
-4. To play, run: `python3 __main__.py`
+```bash
+cd  Asteroid-Clone
+```
+4. To play, run: 
+```bash
+python3 __main__.py
+```
 
 ## How to play
 

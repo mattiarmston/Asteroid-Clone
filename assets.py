@@ -5,7 +5,7 @@ class Assets():
     def __init__(self, window, game):
         self.game = game
         self.BackgroundImage = pygame.transform.scale(
-            pygame.image.load(os.path.join("assets", "blankBG.png")),
+            pygame.image.load(os.path.join("assets", "background.png")),
             (window.width, window.height)
         )
         self.playerImage = pygame.image.load(

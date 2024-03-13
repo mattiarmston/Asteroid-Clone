@@ -25,15 +25,15 @@ class Game():
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
 
-    @staticmethod
-    def getScore(entry):
-        return entry[2]
+    def sortScores(self):
+        self.scores.sort(reverse=True, key=lambda e : e[2])
+        return
 
     def getHighscore(self):
         if self.scores == []:
             return 0
-        self.scores.sort(key=self.getScore)
-        return self.scores[-1][2]
+        self.sortScores()
+        return self.scores[0][2]
 
     def takeInputs(self):
         for event in pygame.event.get():
@@ -114,7 +114,8 @@ class Game():
                     self.quitGame()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        done = True
+                        if playerName.strip() != '':
+                            done = True
                     if event.key == pygame.K_BACKSPACE:
                         if event.mod & pygame.KMOD_CTRL:
                             playerName = ''
@@ -133,7 +134,7 @@ class Game():
         if self.timeAlive > self.longestTime:
             self.longestTime = self.timeAlive
         self.scores.append([playerName, self.timeAlive, self.score])
-        self.scores.sort(key=self.getScore)
+        self.sortScores()
 
     def help(self):
         self.window.help()
@@ -146,13 +147,6 @@ class Game():
                     if event.key == pygame.K_RETURN:
                         done = True
         return
-
-    def quitGame(self):
-        with open("highscores.json", "w") as file:
-            jsonString = json.dumps(self.scores)
-            file.write(jsonString)
-            file.write("\n")
-        quit()
 
     def main(self):
         self.initGame()
@@ -171,11 +165,31 @@ class Game():
         self.setHighscore(playerName)
         return
 
+    def viewHighscores(self):
+        scores = self.scores[0:20]
+        self.window.viewHighscores(scores)
+        done = False
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quitGame()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        done = True
+        return
+
+    def quitGame(self):
+        with open("highscores.json", "w") as file:
+            jsonString = json.dumps(self.scores)
+            file.write(jsonString)
+            file.write("\n")
+        quit()
+
     def mainMenu(self):
         while True:
             confirmed = False
             selected = 0
-            options = [self.main, self.help]
+            options = [self.main, self.help, self.viewHighscores]
             while not confirmed:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -186,7 +200,7 @@ class Game():
                             selected = max(selected, 0)
                         if event.key in [pygame.K_DOWN, pygame.K_s]:
                             selected += 1
-                            selected = min(selected, len(options))
+                            selected = min(selected, len(options) - 1)
                         if event.key == pygame.K_RETURN:
                             confirmed = True
                 self.window.mainMenu(selected)

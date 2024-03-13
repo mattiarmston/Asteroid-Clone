@@ -10,10 +10,13 @@ class Window():
     def mainMenu(self, selected):
         playCol = (150, 150, 150)
         helpCol = (150, 150, 150)
+        highscoresCol = (150, 150, 150)
         if selected == 0:
             playCol = (255, 255, 255)
         elif selected == 1:
             helpCol = (255, 255, 255)
+        elif selected == 2:
+            highscoresCol = (255, 255, 255)
         playText = self.game.assets.mainFont.render(
             'Play',
             1, playCol
@@ -21,6 +24,10 @@ class Window():
         helpText = self.game.assets.mainFont.render(
             'Help',
             1, helpCol
+        )
+        highscoresText = self.game.assets.mainFont.render(
+            'Highscores',
+            1, highscoresCol
         )
         self.window.blit(self.game.assets.BackgroundImage, (0,0))
         self.window.blit(
@@ -31,7 +38,13 @@ class Window():
         self.window.blit(
             helpText,
             (self.width / 2 - helpText.get_width() / 2,
-            self.height / 2 + helpText.get_height() / 2)
+            self.height / 3 + playText.get_height() * 3)
+        )
+        self.window.blit(
+            highscoresText,
+            (self.width / 2 - highscoresText.get_width() / 2,
+            self.height / 3 + playText.get_height() * 3 + \
+                helpText.get_height() * 3)
         )
         pygame.display.update()
 
@@ -74,6 +87,39 @@ class Window():
             self.height/3 + controlsText.get_height() + \
                 objectiveText.get_height() + objectiveText2.get_height() * 2)
         )
+        pygame.display.update()
+
+    def viewHighscores(self, scores):
+        titleText = self.game.assets.mainFont.render(
+            # Whitespace for formatting
+            "    Name           Time       Score",
+            1, (150, 150, 150)
+        )
+        backText = self.game.assets.mainFont.render(
+            "Press Enter to go back",
+            1, (150, 150, 150)
+        )
+        self.window.blit(self.game.assets.BackgroundImage, (0,0))
+        x = 30
+        y = 30
+        self.window.blit(
+            titleText,
+            (x,
+            y)
+        )
+        y += titleText.get_height() + 10
+        i = 1
+        for score in scores:
+            text = self.game.assets.mainFont.render(
+                "{num:>2}. {name:<14} {time:<10.2f} {score:>5}".format(
+                    name=score[0][0:14], num=i, time=score[1], score=score[2]),
+                1, (150, 150, 150)
+            )
+            self.window.blit(text, (x,y))
+            y += text.get_height()
+            i += 1
+        self.window.blit(
+            backText, (self.width/2 - backText.get_width()/2, y + 30))
         pygame.display.update()
 
     def drawFrame(self):

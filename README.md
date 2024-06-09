@@ -14,7 +14,7 @@ pip install pygame
 ```
 2. Clone the repository
 ```bash
-git clone https://github.com/Crus4d3/Asteroid-Clone.git
+git clone https://github.com/mattiarmston/Asteroid-Clone.git
 ```
 3. Navigate to the installation directory
 ```bash

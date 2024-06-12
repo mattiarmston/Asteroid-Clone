@@ -19,7 +19,7 @@ class Asteroid(GameObject):
     def spawnAsteroid(game):
         if game.framesPassed % game.asteroidSpawnRate == 0:
             asteroid = Asteroid(
-                50, 50, random.randint(-15, 15), random.randint(-15,15),
+                50, 50, random.randint(-255, 255), random.randint(-255,255),
                 game.assets.asteroidImage, game
             )
             game.toDraw.append(asteroid)
@@ -36,7 +36,7 @@ class Asteroid(GameObject):
                     int(self.game.window.height/2),
                     int(self.game.window.height * 3/4)
                 )
-                self.speedX = random.randint(1, 15)
+                self.speedX = random.randint(1, 255)
             else:
                 #Asteroid spawns on the right side of the screen
                 self.x = self.game.window.width + self.width
@@ -44,7 +44,7 @@ class Asteroid(GameObject):
                     int(self.game.window.height/2),
                     int(self.game.window.height * 3/4)
                 )
-                self.speedX = random.randint(-15, -1)
+                self.speedX = random.randint(-255, -1)
         else:
             #Asteroid spawns on top/bottom side of the screen
             if random.randint(0,1) == 1:
@@ -54,7 +54,7 @@ class Asteroid(GameObject):
                     int(self.game.window.width * 3/4)
                 )
                 self.y = 0 - self.height
-                self.speedY = random.randint(1, 15)
+                self.speedY = random.randint(1, 255)
             else:
                 #Asteroid spawns on bottom side of the screen
                 self.x = random.randint(
@@ -62,8 +62,10 @@ class Asteroid(GameObject):
                     int(self.game.window.width * 3/4)
                 )
                 self.y = self.game.window.height + self.height
-                self.speedY = random.randint(-15, -1)
+                self.speedY = random.randint(-255, -1)
 
     def moveSelf(self):
-        self.x += self.speedX
-        self.y += self.speedY
+        # This assumes a constant speed, which as of 12/6/24 is true.
+        # This would need to be changed if this is no longer true.
+        self.x += self.speedX * self.game.deltaTime
+        self.y += self.speedY * self.game.deltaTime

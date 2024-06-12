@@ -41,7 +41,7 @@ class Game():
             32,
             self.assets.playerImage,
             self,
-            1
+            289,
         )
         self.toDraw.append(self.player)
         self.lost = False
@@ -64,21 +64,15 @@ class Game():
             self.toDraw.append(coin)
 
     def increaseDifficulty(self):
-        self.currentTime = time.time()
-        self.timeAlive = self.currentTime - self.startTime
-        if int(self.timeAlive) == 5:
-            # Ensures spawn rate is only decreased once, not every frame
-            if self.framesPassed == 0:
-                self.asteroidSpawnRate -= 5
-        elif int(self.timeAlive) == 10:
-            if self.framesPassed == 0:
-                self.asteroidSpawnRate -= 5
-        elif int(self.timeAlive) == 15:
-            if self.framesPassed == 0:
-                self.asteroidSpawnRate -= 5
-        elif int(self.timeAlive) > 15 and int(self.timeAlive) % 5 == 0:
-            if self.framesPassed == 0 and self.asteroidSpawnRate > 1:
-                self.asteroidSpawnRate -= 1
+        # Increase spawn rate only once
+        if self.framesPassed != 0:
+            return
+        timeAlive = int(self.timeAlive)
+        if timeAlive % 5 == 0:
+            if timeAlive <= 15:
+                self.asteroidSpawnRate = max(1, self.asteroidSpawnRate - 5)
+            if timeAlive > 15: 
+                self.asteroidSpawnRate = max(1, self.asteroidSpawnRate - 1)
 
     def playerDead(self):
         self.lost = True
@@ -135,18 +129,23 @@ class Game():
         self.scores.append([playerName, self.timeAlive, self.score])
         self.scores.sort(reverse=True, key=lambda e : e[2])
 
+    def update(self):
+        self.clock.tick(self.window.FPS)
+        self.deltaTime = self.clock.get_time() / 1000
+        self.timeAlive = time.time() - self.startTime
+        self.spawnObjects()
+        self.takeInputs()
+        for item in self.toDraw:
+            item.moveSelf()
+        self.player.checkCollision()
+        self.increaseDifficulty()
+        self.window.drawFrame()
+
     def main(self):
         self.initGame()
         self.startTime = time.time()
         while self.lost == False:
-            self.clock.tick(self.window.FPS)
-            self.spawnObjects()
-            self.takeInputs()
-            for item in self.toDraw:
-                item.moveSelf()
-            self.player.checkCollision()
-            self.increaseDifficulty()
-            self.window.drawFrame()
+            self.update()
         self.endScreen()
         playerName = self.enterName()
         self.setHighscore(playerName)

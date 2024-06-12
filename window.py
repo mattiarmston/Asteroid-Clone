@@ -5,7 +5,7 @@ class Window():
         self.game = game
         self.width, self.height = 1000, 1000
         self.window = pygame.display.set_mode((self.width, self.height))
-        self.FPS = 17
+        self.FPS = 60
         self.defaultCol = (255, 255, 255)
         pygame.display.set_caption("Asteroid clone")
 

@@ -12,7 +12,7 @@ class Player(GameObject):
         self.speedX = 0
         self.acceleration = acceleration
         self.imageEast = self.image
-        self.maxfuel = 10 * self.game.FPS
+        self.maxfuel = 10 * self.game.window.FPS
         self.fuel = self.maxfuel
 
     def moveSelf(self):

@@ -14,7 +14,12 @@ class Assets():
             os.path.join("assets", "asteroid.png"))
         self.coinImage = pygame.image.load(
             os.path.join("assets", "jerry_can.png"))
+        self.fullBox = pygame.image.load(
+            os.path.join("assets", "whiteBox.png"))
+        self.hollowBox = pygame.image.load(
+            os.path.join("assets", "hollowBox.png"))
         self.mainFont = pygame.font.SysFont("monospace", 40)
+        self.boldFont = pygame.font.SysFont("monospace", 40, bold=True)
         # Replace with custom pixel font
         #self.mainFont = pygame.font.Font("assets/pixel_font.ttf", 40)
         pygame.mouse.set_visible(False)

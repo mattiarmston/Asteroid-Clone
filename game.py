@@ -207,16 +207,6 @@ class Game():
             self.updateSettings()
             confirmed = False
 
-    def quitGame(self):
-        with open("highscores.json", "w") as file:
-            jsonString = json.dumps(self.scores)
-            file.write(jsonString)
-            file.write("\n")
-        with open("settings.json", "w") as file:
-            file.write(json.dumps(self.playerSettings))
-            file.write("\n")
-        quit()
-
     def mainMenu(self):
         self.sound.playMainLoop()
         while True:
@@ -239,3 +229,26 @@ class Game():
                         confirmed = True
                 self.window.mainMenu(selected)
             options[selected]()
+
+    def titleScreen(self):
+        done = False
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quitGame()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        done = True
+            self.window.titleScreen()
+        self.mainMenu()
+        return
+
+    def quitGame(self):
+        with open("highscores.json", "w") as file:
+            jsonString = json.dumps(self.scores)
+            file.write(jsonString)
+            file.write("\n")
+        with open("settings.json", "w") as file:
+            file.write(json.dumps(self.playerSettings))
+            file.write("\n")
+        quit()

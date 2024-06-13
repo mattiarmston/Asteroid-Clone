@@ -39,7 +39,7 @@ def loadGame(args):
     def player():
         scores = loadHighscores()
         game = Game(scores)
-        game.mainMenu()
+        game.titleScreen()
 
     def ai():
         startNeat()

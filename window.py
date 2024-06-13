@@ -9,6 +9,28 @@ class Window():
         self.defaultCol = (255, 255, 255)
         pygame.display.set_caption("Asteroid clone")
 
+    def titleScreen(self):
+        titleText = self.game.assets.titleFont.render(
+            "Asteroid Clone", 1, self.defaultCol
+        )
+        enterText = self.game.assets.mainFont.render(
+            "Press Enter", 1, self.defaultCol
+        )
+        self.window.blit(self.game.assets.BackgroundImage, (0,0))
+        y = self.height / 2
+        y -= titleText.get_height()
+        self.window.blit(
+            titleText, (self.width / 2 - titleText.get_width() / 2, y)
+        )
+        y += titleText.get_height()
+        y += enterText.get_height()
+        self.window.blit(
+            enterText, (self.width / 2 - enterText.get_width() / 2, y)
+        )
+        y += enterText.get_height()
+        pygame.display.update()
+        return
+
     def mainMenu(self, selected):
         fonts = [self.game.assets.mainFont, self.game.assets.mainFont,
                  self.game.assets.mainFont, self.game.assets.mainFont]
@@ -143,43 +165,43 @@ class Window():
             else:
                 images.append(self.game.assets.hollowBox)
         i = 0
-        musicLabel = fonts[i].render(
+        musicText = fonts[i].render(
             "Music", 1, self.defaultCol
         )
         i += 1
-        soundLabel = fonts[i].render(
+        soundText = fonts[i].render(
             "Sound", 1, self.defaultCol
         )
         i += 1
-        backLabel = fonts[i].render(
+        backText = fonts[i].render(
             "Back", 1, self.defaultCol
         )
         i = 0
         y = self.height / 3
         self.window.blit(
-            musicLabel, (self.width / 2 - musicLabel.get_width() / 2, y)
+            musicText, (self.width / 2 - musicText.get_width() / 2, y)
         )
-        size = musicLabel.get_height() - 10
+        size = musicText.get_height() - 10
         self.window.blit(
             pygame.transform.scale(images[i], (size, size)),
-            (self.width / 2 + musicLabel.get_width() / 2 + 40, y + 5)
+            (self.width / 2 + musicText.get_width() / 2 + 40, y + 5)
         )
         i += 1
-        y += musicLabel.get_height() * 3
+        y += musicText.get_height() * 3
         self.window.blit(
-            soundLabel, (self.width / 2 - soundLabel.get_width() / 2, y)
+            soundText, (self.width / 2 - soundText.get_width() / 2, y)
         )
-        size = soundLabel.get_height() - 10
+        size = soundText.get_height() - 10
         self.window.blit(
             pygame.transform.scale(images[i], (size, size)),
-            (self.width / 2 + soundLabel.get_width() / 2 + 40, y + 5)
+            (self.width / 2 + soundText.get_width() / 2 + 40, y + 5)
         )
         i += 1
-        y += soundLabel.get_height() * 3
+        y += soundText.get_height() * 3
         self.window.blit(
-            backLabel, (self.width / 2 - backLabel.get_width() / 2, y)
+            backText, (self.width / 2 - backText.get_width() / 2, y)
         )
-        y += backLabel.get_height() * 3
+        y += backText.get_height() * 3
         pygame.display.update()
         return
 
@@ -193,10 +215,6 @@ class Window():
             "Time: %.2f" % self.game.timeAlive,
             1, self.defaultCol
         )
-        fuelLabel = self.game.assets.mainFont.render(
-            "Fuel: {}".format(self.game.player.fuel),
-            1, self.defaultCol
-        )
         maxSize = self.width - scoreLabel.get_width() - timeLabel.get_width() - 40 - 120
         fuelBar = pygame.transform.scale(
             self.game.assets.fullBox,
@@ -204,9 +222,6 @@ class Window():
             scoreLabel.get_height())
         )
         self.window.blit(scoreLabel, (20, 20))
-        #self.window.blit(
-        #    fuelLabel, (self.width/2 - fuelLabel.get_width()/2, 20)
-        #)
         self.window.blit(
             fuelBar, (scoreLabel.get_width() + 80, 20)
         )

@@ -1,0 +1,23 @@
+# Internal python caching
+__pycache__/*
+
+# Development files
+
+## Images
+*.ase
+*.aseprite
+*.xcf
+
+## Audio
+*.m4a
+*.wav
+*.aup
+*.aup3
+
+## Fonts
+*.sfd
+
+tags
+
+# Game specific
+highscores.json

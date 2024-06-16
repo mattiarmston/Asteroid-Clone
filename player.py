@@ -71,7 +71,7 @@ class Player(GameObject):
     def updateFuel(self):
         self.fuel -= 1
         if self.fuel < 1:
-            self.game.playerDead()
+            self.game.playerDead(crash=False)
 
     def checkCollision(self):
         for item in self.game.toDraw:
@@ -85,3 +85,4 @@ class Player(GameObject):
                     self.game.score += 1
                     self.game.toDraw.remove(item)
                     self.game.coinSpawned = False
+                    self.game.sound.playFuelCollect()

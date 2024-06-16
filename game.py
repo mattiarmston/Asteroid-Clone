@@ -74,9 +74,13 @@ class Game():
             if timeAlive > 15: 
                 self.asteroidSpawnRate = max(1, self.asteroidSpawnRate - 1)
 
-    def playerDead(self):
+    def playerDead(self, crash=True):
         self.lost = True
         self.endTime = time.time()
+        if crash:
+            self.sound.playExplosion()
+        else:
+            self.sound.playFizzle()
 
     def endScreen(self):
         self.window.endScreen()
@@ -208,7 +212,6 @@ class Game():
             confirmed = False
 
     def mainMenu(self):
-        self.sound.playMainLoop()
         while True:
             confirmed = False
             selected = 0
@@ -231,6 +234,7 @@ class Game():
             options[selected]()
 
     def titleScreen(self):
+        self.sound.playMainLoop()
         done = False
         while not done:
             for event in pygame.event.get():

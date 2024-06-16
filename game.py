@@ -143,7 +143,7 @@ class Game():
             item.moveSelf()
         self.player.checkCollision()
         self.increaseDifficulty()
-        self.window.drawFrame()
+        self.window.drawFrame(self.timeAlive)
 
     def main(self):
         self.initGame()
@@ -168,7 +168,7 @@ class Game():
         return
 
     def viewHighscores(self):
-        scores = self.scores[0:20]
+        scores = self.scores[0:15]
         self.window.viewHighscores(scores)
         done = False
         while not done:

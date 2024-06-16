@@ -18,12 +18,12 @@ class Sound():
         self.game = game
 
     def playMainLoop(self):
+        if not self.musicChannel.get_busy():
+            self.musicChannel.play(self.mainLoop, loops=-1)
         if not self.game.playerSettings["music"]:
-            self.musicChannel.stop()
-            return
-        if self.musicChannel.get_busy():
-            return
-        self.musicChannel.play(self.mainLoop, loops=-1)
+            self.musicChannel.set_volume(0)
+        else:
+            self.musicChannel.set_volume(1)
 
     # There is a better way of doing this, but I think it should be fine for now.
     def playExplosion(self):

@@ -86,11 +86,11 @@ class Window():
             1, self.defaultCol
         )
         objectiveText = self.game.assets.mainFont.render(
-            "Avoid Asteroids and collect fuel",
+            "Avoid Asteroids and collect fuel,",
             1, self.defaultCol
         )
         objectiveText2 = self.game.assets.mainFont.render(
-            "to survive as long as possible",
+            "to survive as long as possible.",
             1, self.defaultCol
         )
         backText = self.game.assets.boldFont.render(
@@ -122,37 +122,56 @@ class Window():
         pygame.display.update()
 
     def viewHighscores(self, scores):
-        titleText = self.game.assets.mainFont.render(
-            # Whitespace for formatting
-            "    Name           Time       Score",
-            1, self.defaultCol
+        self.window.blit(self.game.assets.BackgroundImage, (0,0))
+        nameText = self.game.assets.mainFont.render(
+            "Name", 1, self.defaultCol
         )
+        timeText = self.game.assets.mainFont.render(
+            "Time", 1, self.defaultCol
+        )
+        scoreText = self.game.assets.mainFont.render(
+            "Score", 1, self.defaultCol
+        )
+        x = 30
+        y = 30
+        nameX = x + self.game.assets.mainFont.render(
+            "15. ", 1, self.defaultCol).get_width()
+        timeX = self.width - (200 + 30) * 2
+        scoreX = self.width - (200 + 30)
+        buffer = self.game.assets.mainFont.render("15. ", 1, self.defaultCol).get_width()
+        self.window.blit(nameText, (nameX, y))
+        self.window.blit(timeText, (timeX, y))
+        self.window.blit(scoreText, (scoreX, y))
+        y += nameText.get_height() + 10
+        i = 1
+        for score in scores:
+            number = self.game.assets.mainFont.render(
+                "{}. ".format(i), 1, self.defaultCol
+            )
+            name = self.game.assets.mainFont.render(
+                "{}".format(score[0][0:14]), 1, self.defaultCol
+            )
+            time = self.game.assets.mainFont.render(
+                "{time:.2f}".format(time=score[1]), 1, self.defaultCol
+            )
+            score = self.game.assets.mainFont.render(
+                "{}".format(score[2]), 1, self.defaultCol
+            )
+            #name=score[0][0:14], num=i, time=score[1], score=score[2]),
+            self.window.blit(number, (x,y))
+            self.window.blit(name, (nameX, y))
+            self.window.blit(time, (timeX, y))
+            self.window.blit(score, (scoreX, y))
+            y += name.get_height()
+            i += 1
         backText = self.game.assets.boldFont.render(
             "Back",
             1, self.defaultCol
         )
-        self.window.blit(self.game.assets.BackgroundImage, (0,0))
-        x = 30
-        y = 30
-        self.window.blit(
-            titleText,
-            (x,
-            y)
-        )
-        y += titleText.get_height() + 10
-        i = 1
-        for score in scores:
-            text = self.game.assets.mainFont.render(
-                "{num:>2}. {name:<14} {time:<10.2f} {score:>5}".format(
-                    name=score[0][0:14], num=i, time=score[1], score=score[2]),
-                1, self.defaultCol
-            )
-            self.window.blit(text, (x,y))
-            y += text.get_height()
-            i += 1
         self.window.blit(
             backText, (self.width/2 - backText.get_width()/2, y + 30))
         pygame.display.update()
+        return
 
     def settings(self, selected, settings):
         self.window.blit(self.game.assets.BackgroundImage, (0,0))
@@ -205,28 +224,46 @@ class Window():
         pygame.display.update()
         return
 
-    def drawFrame(self):
+    def drawFrame(self, timeAlive):
         self.window.blit(self.game.assets.BackgroundImage, (0,0))
         scoreLabel = self.game.assets.mainFont.render(
             "Score: {}".format(self.game.score),
              1, self.defaultCol
         )
-        timeLabel = self.game.assets.mainFont.render(
-            "Time: %.2f" % self.game.timeAlive,
-            1, self.defaultCol
+        #timeLabel = self.game.assets.mainFont.render(
+        #    "Time: %.2f" % self.game.timeAlive,
+        #    1, self.defaultCol
+        #)
+        timeLabel1 = self.game.assets.mainFont.render(
+            "Time: ", 1, self.defaultCol
         )
-        maxSize = self.width - scoreLabel.get_width() - timeLabel.get_width() - 40 - 120
+        timeLabel2 = self.game.assets.mainFont.render(
+            "{time:.2f}".format(time=timeAlive), 1, self.defaultCol
+        )
+        x = 20
+        y = 10
+        # Generally max width of numbers is 101px
+        time2X = self.width - x - 101
+        time1X = time2X - timeLabel1.get_width()
+        buffer = 100
+        maxSize = self.width - x - (self.width - time1X) - \
+            scoreLabel.get_width() - buffer * 2
         fuelBar = pygame.transform.scale(
             self.game.assets.fullBox,
             (maxSize * (self.game.player.fuel / self.game.player.maxfuel),
             scoreLabel.get_height())
         )
-        self.window.blit(scoreLabel, (20, 20))
+        self.window.blit(scoreLabel, (x, y))
+        x += scoreLabel.get_width()
+        x += buffer
         self.window.blit(
-            fuelBar, (scoreLabel.get_width() + 80, 20)
+            fuelBar, (x, y)
         )
         self.window.blit(
-            timeLabel, (self.width - timeLabel.get_width() - 20, 20)
+            timeLabel2, (time2X, y)
+        )
+        self.window.blit(
+            timeLabel1, (time1X, y)
         )
         for item in self.game.toDraw:
             self.window.blit(item.image, (item.x, item.y))
@@ -237,8 +274,8 @@ class Window():
             "Game Over",
             1, self.defaultCol
         )
-        continueText = self.game.assets.mainFont.render(
-            "Press Enter",
+        enterText = self.game.assets.boldFont.render(
+            "Enter",
             1, self.defaultCol
         )
         self.window.blit(
@@ -247,8 +284,8 @@ class Window():
             self.height / 3)
         )
         self.window.blit(
-            continueText,
-            (self.width/2 - continueText.get_width()/2,
+            enterText,
+            (self.width/2 - enterText.get_width()/2,
             self.height / 3 + gameOverText.get_height() * 2)
         )
         pygame.display.update()

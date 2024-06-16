@@ -22,5 +22,11 @@ class Assets():
         self.boldFont = pygame.font.SysFont("monospace", 40, bold=True)
         self.titleFont = pygame.font.SysFont("monospace", 80, bold=True)
         # Replace with custom pixel font
-        #self.mainFont = pygame.font.Font("assets/pixel_font.ttf", 40)
+        self.mainFont = pygame.font.Font("assets/PixelifyCustom.otf", 40)
+        # This uses pygame to emulate bold fonts. It looks good enough and means
+        # I don't have to do this manually.
+        self.boldFont = pygame.font.Font("assets/PixelifyCustom.otf", 50)
+        self.boldFont.bold = True
+        self.titleFont = pygame.font.Font("assets/PixelifyCustom.otf", 100)
+        self.titleFont.bold = True
         pygame.mouse.set_visible(False)

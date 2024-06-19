@@ -8,8 +8,46 @@ class Assets():
             pygame.image.load(os.path.join("assets", "background.png")),
             (window.width, window.height)
         )
-        self.playerImage = pygame.image.load(
-            os.path.join("assets", "player2.png"))
+        self.playerThrustAnim = [
+            pygame.image.load(
+                os.path.join("assets", "player1.png")),
+            pygame.image.load(
+                os.path.join("assets", "player2.png")),
+        ]
+        self.explosionAnim = [
+            pygame.image.load(
+                os.path.join("assets", "explosion1.png")),
+            pygame.image.load(
+                os.path.join("assets", "explosion2.png")),
+            pygame.image.load(
+                os.path.join("assets", "explosion3.png")),
+            pygame.image.load(
+                os.path.join("assets", "explosion4.png")),
+            pygame.image.load(
+                os.path.join("assets", "explosion5.png")),
+            pygame.image.load(
+                os.path.join("assets", "explosion6.png")),
+            pygame.image.load(
+                os.path.join("assets", "explosion7.png")),
+            pygame.image.load(
+                os.path.join("assets", "explosion8.png")),
+            pygame.image.load(
+                os.path.join("assets", "explosion9.png")),
+        ]
+        self.playerSmokeAnim = [
+            pygame.image.load(
+                os.path.join("assets", "playerSmoke1.png")),
+            pygame.image.load(
+                os.path.join("assets", "playerSmoke2.png")),
+            pygame.image.load(
+                os.path.join("assets", "playerSmoke3.png")),
+            pygame.image.load(
+                os.path.join("assets", "playerSmoke4.png")),
+            pygame.image.load(
+                os.path.join("assets", "playerSmoke5.png")),
+            pygame.image.load(
+                os.path.join("assets", "playerSmoke6.png")),
+        ]
         self.asteroidImage = pygame.image.load(
             os.path.join("assets", "asteroid.png"))
         self.coinImage = pygame.image.load(
@@ -18,9 +56,6 @@ class Assets():
             os.path.join("assets", "whiteBox.png"))
         self.hollowBox = pygame.image.load(
             os.path.join("assets", "hollowBox.png"))
-        self.mainFont = pygame.font.SysFont("monospace", 40)
-        self.boldFont = pygame.font.SysFont("monospace", 40, bold=True)
-        self.titleFont = pygame.font.SysFont("monospace", 80, bold=True)
         # Replace with custom pixel font
         self.mainFont = pygame.font.Font("assets/PixelifyCustom.otf", 40)
         # This uses pygame to emulate bold fonts. It looks good enough and means

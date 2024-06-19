@@ -17,7 +17,7 @@ class Asteroid(GameObject):
 
     @staticmethod
     def spawnAsteroid(game):
-        if game.framesPassed % game.asteroidSpawnRate == 0:
+        if game.window.frame % game.asteroidSpawnRate == 0:
             asteroid = Asteroid(
                 50, 50, random.randint(-255, 255), random.randint(-255,255),
                 game.assets.asteroidImage, game

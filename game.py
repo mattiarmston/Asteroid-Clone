@@ -18,7 +18,7 @@ class Game():
         self.playerSettings = playerSettings
         self.lost = False
         self.toDraw = []
-        self.framesPassed = 0
+        self.window.frame = 0
         self.timeAlive = 0
         self.clock = pygame.time.Clock()
         self.scores = scores
@@ -31,7 +31,7 @@ class Game():
     def initGame(self):
         self.toDraw = []
         self.score = 0
-        self.framesPassed= 0
+        self.window.frame= 0
         self.coinSpawned = False
         self.asteroidSpawnRate = 30
         self.player = Player(
@@ -39,7 +39,10 @@ class Game():
             int(self.window.height/2),
             32,
             32,
-            self.assets.playerImage,
+            self.assets.playerThrustAnim[0],
+            self.assets.playerThrustAnim,
+            self.assets.explosionAnim,
+            self.assets.playerSmokeAnim,
             self,
             289,
         )
@@ -53,10 +56,6 @@ class Game():
         self.keys = pygame.key.get_pressed()
 
     def spawnObjects(self):
-        #Used for spawning x asteroids per second. Need to find better solution.
-        self.framesPassed += 1
-        if self.framesPassed == self.window.FPS:
-            self.framesPassed = 0
         Asteroid.spawnAsteroid(self)
         if self.coinSpawned == False:
             coin = Coin(0, 0, 32, 32, self.assets.coinImage, self)
@@ -65,7 +64,7 @@ class Game():
 
     def increaseDifficulty(self):
         # Increase spawn rate only once
-        if self.framesPassed != 0:
+        if self.window.frame != 0:
             return
         timeAlive = int(self.timeAlive)
         if timeAlive % 5 == 0:
@@ -74,13 +73,41 @@ class Game():
             if timeAlive > 15: 
                 self.asteroidSpawnRate = max(1, self.asteroidSpawnRate - 1)
 
+    def explosionAnim(self):
+        done = False
+        framesPassed = 0
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quitGame()
+            framesPassed += 1
+            done = self.player.playExplosionAnim(framesPassed)
+            self.window.drawFrame(self.timeAlive)
+            self.clock.tick(self.window.FPS)
+        return
+
+    def smokeAnim(self):
+        done = False
+        framesPassed = 0
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quitGame()
+            framesPassed += 1
+            done = self.player.playSmokeAnim(framesPassed)
+            self.window.drawFrame(self.timeAlive)
+            self.clock.tick(self.window.FPS)
+        return
+
     def playerDead(self, crash=True):
         self.lost = True
         self.endTime = time.time()
         if crash:
             self.sound.playExplosion()
+            self.explosionAnim()
         else:
             self.sound.playFizzle()
+            self.smokeAnim()
 
     def endScreen(self):
         self.window.endScreen()
@@ -137,6 +164,9 @@ class Game():
         self.clock.tick(self.window.FPS)
         self.deltaTime = self.clock.get_time() / 1000
         self.timeAlive = time.time() - self.startTime
+        self.window.frame += 1
+        if self.window.frame == self.window.FPS:
+            self.window.frame = 0
         self.spawnObjects()
         self.takeInputs()
         for item in self.toDraw:

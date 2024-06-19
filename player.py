@@ -6,14 +6,18 @@ from asteroid import Asteroid
 from coin import Coin
 
 class Player(GameObject):
-    def __init__(self, x, y, width, height, image, game, thrust):
+    def __init__(self, x, y, width, height, image, thrustAnim, explosionAnim,
+                 smokeAnim, game, thrust):
         super().__init__(x, y, width, height, image, game)
         self.speedY = 0
         self.speedX = 0
         self.thrust = thrust
-        self.imageEast = self.image
+        self.accelerating = False
         self.maxfuel = 10 * self.game.window.FPS
         self.fuel = self.maxfuel
+        self.thrustAnim = thrustAnim
+        self.explosionAnim = explosionAnim
+        self.smokeAnim = smokeAnim
 
     def moveSelf(self):
         self.updatePos()
@@ -26,14 +30,19 @@ class Player(GameObject):
         # If this changes, integrals will need to be used to calculate the exact
         # area under the curve.
         accelX, accelY = 0, 0
+        self.accelerating = False
         if self.game.keys[pygame.K_w] or self.game.keys[pygame.K_UP]:
             accelY -= self.thrust
+            self.accelerating = True
         if self.game.keys[pygame.K_s] or self.game.keys[pygame.K_DOWN]:
             accelY += self.thrust
+            self.accelerating = True
         if self.game.keys[pygame.K_a] or self.game.keys[pygame.K_LEFT]:
             accelX -= self.thrust
+            self.accelerating = True
         if self.game.keys[pygame.K_d] or self.game.keys[pygame.K_RIGHT]:
             accelX += self.thrust
+            self.accelerating = True
         # Area of a parallelogram: height = deltaTime, side a = speedX,
         # side b = speedX + accel * deltaTime.
         self.x += (self.speedX + accelX/2 * self.game.deltaTime) * self.game.deltaTime
@@ -51,7 +60,47 @@ class Player(GameObject):
         self.y = min(max(0, self.y), self.game.window.height - self.height)
         return
 
-    def updateDir(self):
+    def playExplosionAnim(self, framesPassed):
+        delay = 0.07 * self.game.window.FPS
+        animIndex = int(framesPassed / delay)
+        if animIndex > len(self.explosionAnim) - 1:
+            return True
+        self.image = self.explosionAnim[animIndex]
+        return False
+
+    def playSmokeAnim(self, framesPassed):
+        # The images for this animation have the player in a different place
+        # relative to the top left compared to the thrust animation images.
+        # To correct this I ensure that the both images' centres are in the same
+        # position.
+        delay = 0.1 * self.game.window.FPS
+        animIndex = int(framesPassed / delay)
+        if animIndex > len(self.smokeAnim) - 1:
+            return True
+        image = self.smokeAnim[animIndex]
+        centerX = self.x + self.image.get_width() / 2
+        centerY = self.y + self.image.get_height() / 2
+        self.image = pygame.transform.rotate(image, self.theta)
+        diffX = centerX - (self.x + self.image.get_width() / 2)
+        diffY = centerY - (self.y + self.image.get_width() / 2)
+        self.x += diffX
+        self.y += diffY
+        return False
+
+    def getAnim(self):
+        return self.thrustAnim
+
+    def getImage(self):
+        currentAnim = self.getAnim()
+        animIndex = 0
+        if currentAnim == self.thrustAnim:
+            if self.accelerating:
+                animIndex = 1
+            else:
+                animIndex = 0
+        return currentAnim[animIndex]
+
+    def getDir(self):
         # The trigonometry here assumes that a positive dY means an upward,
         # moving player.
         speedY = self.speedY * -1
@@ -65,12 +114,16 @@ class Player(GameObject):
             theta = math.degrees(thetaRad)
             if self.speedX < 0:
                 theta += 180
-        self.image = pygame.transform.rotate(self.imageEast, theta)
+        return theta
+
+    def updateDir(self):
+        self.image = pygame.transform.rotate(self.getImage(), self.getDir())
         return
 
     def updateFuel(self):
         self.fuel -= 1
         if self.fuel < 1:
+            self.theta = self.getDir()
             self.game.playerDead(crash=False)
 
     def checkCollision(self):

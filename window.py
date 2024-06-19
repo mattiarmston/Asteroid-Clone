@@ -6,6 +6,7 @@ class Window():
         self.width, self.height = 1000, 1000
         self.window = pygame.display.set_mode((self.width, self.height))
         self.FPS = 60
+        self.frame = 0
         self.defaultCol = (255, 255, 255)
         pygame.display.set_caption("Asteroid clone")
 
@@ -274,8 +275,8 @@ class Window():
             "Game Over",
             1, self.defaultCol
         )
-        enterText = self.game.assets.boldFont.render(
-            "Enter",
+        continueText = self.game.assets.boldFont.render(
+            "Continue",
             1, self.defaultCol
         )
         self.window.blit(
@@ -284,8 +285,8 @@ class Window():
             self.height / 3)
         )
         self.window.blit(
-            enterText,
-            (self.width/2 - enterText.get_width()/2,
+            continueText,
+            (self.width/2 - continueText.get_width()/2,
             self.height / 3 + gameOverText.get_height() * 2)
         )
         pygame.display.update()

@@ -34,7 +34,8 @@ class Window():
 
     def mainMenu(self, selected):
         fonts = [self.game.assets.mainFont, self.game.assets.mainFont,
-                 self.game.assets.mainFont, self.game.assets.mainFont]
+                 self.game.assets.mainFont, self.game.assets.mainFont,
+                 self.game.assets.mainFont]
         fonts[selected] = self.game.assets.boldFont
         i = 0
         playText = fonts[i].render(
@@ -57,8 +58,13 @@ class Window():
             1, self.defaultCol
         )
         i += 1
+        creditsText = fonts[i].render(
+            'Credits',
+            1, self.defaultCol
+        )
+        i += 1
         self.window.blit(self.game.assets.BackgroundImage, (0,0))
-        y = self.height / 4
+        y = self.height / 5
         self.window.blit(
             playText,
             (self.width / 2 - playText.get_width() / 2, y)
@@ -79,6 +85,11 @@ class Window():
             (self.width / 2 - highscoresText.get_width() / 2, y)
         )
         y += highscoresText.get_height() * 3
+        self.window.blit(
+            creditsText,
+            (self.width / 2 - creditsText.get_width() / 2, y)
+        )
+        y += creditsText.get_height() * 3
         pygame.display.update()
 
     def help(self):
@@ -225,16 +236,53 @@ class Window():
         pygame.display.update()
         return
 
+    def credits(self):
+        self.window.blit(self.game.assets.BackgroundImage, (0,0))
+        codeText = self.game.assets.smallBoldFont.render(
+            "Art, Code, Music, Sound", 1, self.defaultCol
+        )
+        mattiText = self.game.assets.mainFont.render(
+            "Matti Armston", 1, self.defaultCol
+        )
+        fontText = self.game.assets.smallBoldFont.render(
+            "Original Pixelify Font", 1, self.defaultCol
+        )
+        justprinceText = self.game.assets.mainFont.render(
+            "Stefie Justprince", 1, self.defaultCol
+        )
+        backText = self.game.assets.boldFont.render(
+            "Back", 1, self.defaultCol
+        )
+        y = self.height / 4
+        backY = self.height - backText.get_height() * 2
+        self.window.blit(
+            codeText, (self.width / 2 - codeText.get_width() / 2, y)
+        )
+        y += codeText.get_height()
+        self.window.blit(
+            mattiText, (self.width / 2 - mattiText.get_width() / 2, y)
+        )
+        y += mattiText.get_height() * 2
+        self.window.blit(
+            fontText, (self.width / 2 - fontText.get_width() / 2, y)
+        )
+        y += fontText.get_height()
+        self.window.blit(
+            justprinceText, (self.width / 2 - justprinceText.get_width() / 2, y)
+        )
+        y += justprinceText.get_height()
+        self.window.blit(
+            backText, (self.width / 2 - backText.get_width() / 2, backY)
+        )
+        pygame.display.update()
+        return
+
     def drawFrame(self, timeAlive):
         self.window.blit(self.game.assets.BackgroundImage, (0,0))
         scoreLabel = self.game.assets.mainFont.render(
             "Score: {}".format(self.game.score),
              1, self.defaultCol
         )
-        #timeLabel = self.game.assets.mainFont.render(
-        #    "Time: %.2f" % self.game.timeAlive,
-        #    1, self.defaultCol
-        #)
         timeLabel1 = self.game.assets.mainFont.render(
             "Time: ", 1, self.defaultCol
         )

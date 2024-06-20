@@ -210,6 +210,18 @@ class Game():
                         done = True
         return
 
+    def credits(self):
+        done = False
+        while not done:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quitGame()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        done = True
+            self.window.credits()
+        return
+
     def updateSettings(self):
         # When settings change get each module to update accordingly
         self.sound.updateSettings()
@@ -245,7 +257,8 @@ class Game():
         while True:
             confirmed = False
             selected = 0
-            options = [self.main, self.help, self.settings, self.viewHighscores]
+            options = [self.main, self.help, self.settings, self.viewHighscores,
+                self.credits]
             while not confirmed:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:

@@ -60,6 +60,8 @@ class Assets():
         self.mainFont = pygame.font.Font("assets/PixelifyCustom.otf", 40)
         # This uses pygame to emulate bold fonts. It looks good enough and means
         # I don't have to do this manually.
+        self.smallBoldFont = pygame.font.Font("assets/PixelifyCustom.otf", 40)
+        self.smallBoldFont.bold = True
         self.boldFont = pygame.font.Font("assets/PixelifyCustom.otf", 50)
         self.boldFont.bold = True
         self.titleFont = pygame.font.Font("assets/PixelifyCustom.otf", 100)

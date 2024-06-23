@@ -20,4 +20,11 @@ __pycache__/*
 tags
 
 # Game specific
+
 highscores.json
+
+## Old image files
+assets/asteroidImage.png
+assets/playerImage.png
+assets/coinImage.png
+assets/blankBG.png

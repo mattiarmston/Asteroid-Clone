@@ -8,11 +8,11 @@ class Window():
         self.FPS = 60
         self.frame = 0
         self.defaultCol = (255, 255, 255)
-        pygame.display.set_caption("Asteroid clone")
+        pygame.display.set_caption("Fuel Leak!")
 
     def titleScreen(self):
         titleText = self.game.assets.titleFont.render(
-            "Asteroid Clone", 1, self.defaultCol
+            "Fuel  Leak!", 1, self.defaultCol
         )
         enterText = self.game.assets.mainFont.render(
             "Press Enter", 1, self.defaultCol
@@ -93,12 +93,16 @@ class Window():
         pygame.display.update()
 
     def help(self):
+        leakText = self.game.assets.mainFont.render(
+            "Your ship has a fuel leak!",
+            1, self.defaultCol
+        )
         controlsText = self.game.assets.mainFont.render(
-            "Use WASD or Arrow Keys to move.",
+            "Use WASD or the Arrow Keys to move.",
             1, self.defaultCol
         )
         objectiveText = self.game.assets.mainFont.render(
-            "Avoid Asteroids and collect fuel,",
+            "Collect fuel and avoid asteroids,",
             1, self.defaultCol
         )
         objectiveText2 = self.game.assets.mainFont.render(
@@ -109,28 +113,34 @@ class Window():
             "Back",
             1, self.defaultCol
         )
+        y = self.height / 4
+        backY = self.height - backText.get_height() * 2
         self.window.blit(self.game.assets.BackgroundImage, (0,0))
         self.window.blit(
-            controlsText,
-            (self.width/2 - controlsText.get_width()/2,
-            self.height/3)
+            leakText,
+            (self.width/2 - leakText.get_width()/2, y)
         )
+        y += leakText.get_height() * 2
+        self.window.blit(
+            controlsText,
+            (self.width/2 - controlsText.get_width()/2, y)
+        )
+        y += controlsText.get_height()
         self.window.blit(
             objectiveText,
-            (self.width/2 - objectiveText.get_width()/2,
-            self.height/3 + controlsText.get_height())
+            (self.width/2 - objectiveText.get_width()/2, y)
         )
+        y += objectiveText.get_height()
         self.window.blit(
             objectiveText2,
-            (self.width/2 - objectiveText2.get_width()/2,
-            self.height/3 + controlsText.get_height()+objectiveText.get_height())
+            (self.width/2 - objectiveText2.get_width()/2, y)
         )
+        y += objectiveText2.get_height()
         self.window.blit(
             backText,
-            (self.width/2 - backText.get_width()/2,
-            self.height/3 + controlsText.get_height() + \
-                objectiveText.get_height() + objectiveText2.get_height() * 2)
+            (self.width/2 - backText.get_width()/2, backY)
         )
+        y += backText.get_height()
         pygame.display.update()
 
     def viewHighscores(self, scores):

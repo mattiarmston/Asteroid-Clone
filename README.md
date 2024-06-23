@@ -1,10 +1,9 @@
-# ![image info](./assets/player2.png) Asteroid-Clone 
+# ![image info](./assets/jerry_can.png) Fuel Leak!
 
 ![image info](./assets/screenshot2.png)
 
-Survive as long as you can in this asteroid-inspired retro game. Dodge asteroids
-and collect fuel cans to keep your space ship in running order as long as you
-can.
+Your ship has a fuel leak! Survive as long as you can by dodging asteroids and
+collecting fuel cans to power your ship in this asteroids inspired game.
 
 ## Quick start
 
@@ -27,8 +26,8 @@ python3 __main__.py
 
 ## How to play
 
-Use WASD or the Arrow Keys to move and navigate the menu. Try to avoid the grey
+Use WASD or the Arrow Keys to move and navigate the menu. Try to avoid the
 asteroids for as long as you can – but be careful! You only have 10 seconds of
-fuel, which you can replenish by flying into and collecting fuel cans, which are
-scattered across the screen. Try to survive as long as you can and beat your
-high score.
+fuel, which you must replenish by collecting fuel cans, which are scattered
+across the screen. Try to survive as long as you can and beat your high score.
+

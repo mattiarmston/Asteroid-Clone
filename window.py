@@ -160,7 +160,7 @@ class Window():
             "15. ", 1, self.defaultCol).get_width()
         timeX = self.width - (200 + 30) * 2
         scoreX = self.width - (200 + 30)
-        buffer = self.game.assets.mainFont.render("15. ", 1, self.defaultCol).get_width()
+        scoreEndX = scoreX + scoreText.get_width()
         self.window.blit(nameText, (nameX, y))
         self.window.blit(timeText, (timeX, y))
         self.window.blit(scoreText, (scoreX, y))
@@ -179,19 +179,20 @@ class Window():
             score = self.game.assets.mainFont.render(
                 "{}".format(score[2]), 1, self.defaultCol
             )
-            #name=score[0][0:14], num=i, time=score[1], score=score[2]),
+            scoreAlignX = scoreEndX - score.get_width()
             self.window.blit(number, (x,y))
             self.window.blit(name, (nameX, y))
             self.window.blit(time, (timeX, y))
-            self.window.blit(score, (scoreX, y))
+            self.window.blit(score, (scoreAlignX, y))
             y += name.get_height()
             i += 1
         backText = self.game.assets.boldFont.render(
             "Back",
             1, self.defaultCol
         )
+        backY = self.height - backText.get_height() * 2
         self.window.blit(
-            backText, (self.width/2 - backText.get_width()/2, y + 30))
+            backText, (self.width/2 - backText.get_width()/2, backY))
         pygame.display.update()
         return
 
@@ -219,6 +220,7 @@ class Window():
         )
         i = 0
         y = self.height / 3
+        backY = self.height - backText.get_height() * 2
         self.window.blit(
             musicText, (self.width / 2 - musicText.get_width() / 2, y)
         )
@@ -240,7 +242,7 @@ class Window():
         i += 1
         y += soundText.get_height() * 3
         self.window.blit(
-            backText, (self.width / 2 - backText.get_width() / 2, y)
+            backText, (self.width / 2 - backText.get_width() / 2, backY)
         )
         y += backText.get_height() * 3
         pygame.display.update()

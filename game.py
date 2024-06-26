@@ -212,6 +212,7 @@ class Game():
 
     def credits(self):
         done = False
+        self.window.credits()
         while not done:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -219,7 +220,6 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         done = True
-            self.window.credits()
         return
 
     def updateSettings(self):
@@ -231,13 +231,16 @@ class Game():
         confirmed = False
         selected = 0
         options = ["music", "sound", "back"]
+        self.window.settings(selected, self.playerSettings)
         while True:
             while not confirmed:
+                change = False
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.quitGame()
                     if event.type != pygame.KEYDOWN:
                         continue
+                    change = True
                     if event.key in [pygame.K_UP, pygame.K_w]:
                         selected -= 1
                         selected = max(selected, 0)
@@ -246,11 +249,14 @@ class Game():
                         selected = min(selected, len(options) - 1)
                     if event.key == pygame.K_RETURN:
                         confirmed = True
-                self.window.settings(selected, self.playerSettings)
+                    if change:
+                        self.window.settings(selected, self.playerSettings)
             if options[selected] == "back":
                 break
             self.playerSettings[options[selected]] = not self.playerSettings[options[selected]]
             self.updateSettings()
+            # If we have selected something we need to update the screen
+            self.window.settings(selected, self.playerSettings)
             confirmed = False
 
     def mainMenu(self):
@@ -259,12 +265,15 @@ class Game():
             selected = 0
             options = [self.main, self.help, self.settings, self.viewHighscores,
                 self.credits]
+            self.window.mainMenu(selected)
             while not confirmed:
+                change = False
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         self.quitGame()
                     if event.type != pygame.KEYDOWN:
                         continue
+                    change = True
                     if event.key in [pygame.K_UP, pygame.K_w]:
                         selected -= 1
                         selected = max(selected, 0)
@@ -273,12 +282,14 @@ class Game():
                         selected = min(selected, len(options) - 1)
                     if event.key == pygame.K_RETURN:
                         confirmed = True
-                self.window.mainMenu(selected)
+                if change:
+                    self.window.mainMenu(selected)
             options[selected]()
 
     def titleScreen(self):
         self.sound.playMainLoop()
         done = False
+        self.window.titleScreen()
         while not done:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -286,7 +297,6 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         done = True
-            self.window.titleScreen()
         self.mainMenu()
         return
 
